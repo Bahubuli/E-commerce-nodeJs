@@ -1,45 +1,37 @@
-const { StatusCodes } = require("http-status-codes");
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
-const createJWT = ({payload}) =>{
-    const token = jwt.sign(payload,process.env.JWT_SECRET,{expiresIn:process.env.JWT_LIFETIME})
-    return token;
-}
+const createJWT = ({ payload }) => {
+  const token = jwt.sign(payload, process.env.JWT_SECRET);
+  return token;
+};
 
-const isTokenValid = ({token}) => jwt.verify(token,process.env.JWT_SECRET);
+const isTokenValid = (token) => jwt.verify(token, process.env.JWT_SECRET);
 
-const attachCookiesToResponse = ({res,user}) =>{
-    const token = createJWT({payload:user});
+const attachCookiesToResponse = ({ res, user,refreshToken }) => {
+  const accessTokenJWT = createJWT({ payload: {user} });
 
-    const oneDay = 1000*60*60*24;
+  const refreshTokenJWT = createJWT({payload:{user,refreshToken}})
 
-    res.cookie("token",token,{
-       httpOnly:true,
-       expires:new Date(Date.now()+oneDay),
-       secure:process.env.NODE_ENV==="production",
-       signed:true
-    })
-}
+  const oneDay = 1000 * 60 * 60 * 24;
 
-const createTokenUser = (user)=>{
-    return {name:user.name,userId:user._id,role:user.role};
-}
+  res.cookie('accessToken', accessTokenJWT, {
+    httpOnly: true,
+    maxAge:1000, //1000 sec as max
+    secure: process.env.NODE_ENV === 'production',
+    signed: true,
+  });
 
-const CustomError = require("../errors")
+  res.cookie("refreshToken",refreshTokenJWT,{
+    httpOnly:true,
+    secure:process.env.NODE_ENV==="production",
+    signed:true,
+    expires:new Date(Date.now()+oneDay)
+  })
 
-const checkPermissions = (requestUser,resourceUserId) =>{
-
-    if(requestUser.role==='admin') return;
-
-    if(requestUser.userId===resourceUserId.toString()) return;
-
-    throw new CustomError.UnauthenticatedError("Not authorized to access this route")
-}
+};
 
 module.exports = {
-    createJWT,
-    isTokenValid,
-    attachCookiesToResponse,
-    createTokenUser,
-    checkPermissions
-}
+  createJWT,
+  isTokenValid,
+  attachCookiesToResponse,
+};

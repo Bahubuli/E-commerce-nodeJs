@@ -1,0 +1,11 @@
+{
+  "_id": { "$oid": "655375271ad43fbba2b2219c" },
+  "refreshToken": "909d0b091e7a29c3bd8af0ce2f27155a7144a177d752f948b75536647b569a8caafb8c8e7fe80fa7",
+  "ip": "::1",
+  "userAgent": "PostmanRuntime/7.35.0",
+  "isValid": false,
+  "user": { "$oid": "65533bfde8bda950248af18f" },
+  "createdAt": { "$date": { "$numberLong": "1699968295026" } },
+  "updatedAt": { "$date": { "$numberLong": "1699968295026" } },
+  "__v": { "$numberInt": "0" }
+}

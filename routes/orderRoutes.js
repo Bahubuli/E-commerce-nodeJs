@@ -1,10 +1,10 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const {
-  authenticateUser,
-  authorizePermission,
-} = require("../middleware/authentication");
+// const {
+//   authenticateUser,
+//   authorizePermissions,
+// } = require('../middleware/authentication');
 
 const {
   getAllOrders,
@@ -12,18 +12,21 @@ const {
   getCurrentUserOrders,
   createOrder,
   updateOrder,
-} = require("../controllers/orderController");
+  addOrder
+} = require('../controllers/orderController');
 
+// authenticateUser, authorizePermissions('admin'),
 router
-  .route("/")
-  .post(authenticateUser, createOrder)
-  .get(authenticateUser, authorizePermission("admin"), getAllOrders);
+  .route('/')
+  .post(addOrder)
+  .get(getCurrentUserOrders);
 
-router.route("/showAllMyOrders").get(authenticateUser, getCurrentUserOrders);
+//router.route('/showMyOrders').get(authenticateUser, getCurrentUserOrders);
 
+// authenticateUser
 router
-  .route("/:id")
-  .get(authenticateUser, getSingleOrder)
-  .patch(authenticateUser, updateOrder);
+  .route('/:id')
+  .get( getSingleOrder)
+  .patch( updateOrder);
 
 module.exports = router;

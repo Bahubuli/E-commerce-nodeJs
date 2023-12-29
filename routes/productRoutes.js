@@ -1,38 +1,36 @@
+const express = require('express');
+const router = express.Router();
 const {
   authenticateUser,
-  authorizePermission,
-} = require("../middleware/authentication");
+  authorizePermissions,
+} = require('../middleware/authentication');
+
 const {
-  getAllProducts,
-  getSinglProduct,
   createProduct,
+  getAllProducts,
+  getSingleProduct,
   updateProduct,
   deleteProduct,
   uploadImage,
-} = require("../controllers/productController");
+} = require('../controllers/productController');
 
-const {getSingleProductReviews} = require("../controllers/reviewController")
-
-const express = require("express");
-const router = express.Router();
+const { getSingleProductReviews } = require('../controllers/reviewController');
 
 router
-    .route("/")
-    .post([authenticateUser, authorizePermission("admin")], createProduct)
-    .get(getAllProducts)
-
-
-router
-    .route("/:id")
-    .get(getSinglProduct)
-    .patch([authenticateUser,authorizePermission("admin")],updateProduct)
-    .delete([authenticateUser,authorizePermission("admin")],deleteProduct)
-
-router.route("/:id/reviews").get(getSingleProductReviews)
+  .route('/')
+  .post([authenticateUser, authorizePermissions('admin')], createProduct)
+  .get(getAllProducts);
 
 router
-    .route("/uploadImage")
-    .post([authenticateUser,authorizePermission("admin")],uploadImage)
+  .route('/uploadImage')
+  .post([authenticateUser, authorizePermissions('admin')], uploadImage);
 
+router
+  .route('/:id')
+  .get(getSingleProduct)
+  .patch([authenticateUser, authorizePermissions('admin')], updateProduct)
+  .delete([authenticateUser, authorizePermissions('admin')], deleteProduct);
+
+router.route('/:id/reviews').get(getSingleProductReviews);
 
 module.exports = router;

@@ -1,36 +1,49 @@
-const CustomError = require("../errors")
-const {isTokenValid} = require("../utils/jwt")
+const Token = require("../models/Token");
+const CustomError = require("../errors");
+const { isTokenValid } = require("../utils");
+const { attachCookiesToResponse } = require("../utils");
 
-const authenticateUser = async(req,res,next)=>{
+const authenticateUser = async (req, res, next) => {
+    const { refreshToken, accessToken } = req.signedCookies;
 
-    const token = req.signedCookies.token
-
-    if(!token)
-    throw new CustomError.UnauthenticatedError("Authentication Invalid")
-
+    console.log(refreshToken,accessToken)
     try {
-       const {name,userId,role} = isTokenValid({token})
-       req.user = {name,userId,role}
-       next();
+      if (accessToken) {
+        const payload = isTokenValid(accessToken);
+        req.user = payload.user;
+        return next();
+      }
+      const payload = isTokenValid(refreshToken);
+      console.log("payload",payload)
+      const existingToken = await Token.findOne({
+        user: payload.user.userId,
+        refreshToken: payload.refreshToken,
+      });
 
+      if (!existingToken || !existingToken?.isValid)
+        throw new CustomError.UnauthenticatedError("Authentication Invalid");
+
+        attachCookiesToResponse({res,user:payload.user,refreshToken:existingToken.refreshToken})
+
+  req.user= payload.user
+      next();
     } catch (error) {
-      throw new CustomError.UnauthenticatedError("Authentication invalid")
+      throw new CustomError.UnauthenticatedError("Authentication Invalid");
     }
-}
+  };
 
-
-const authorizePermission = (...roles)=>{
-
-     return (req,res,next)=>{
-        if(!roles.includes(req.user.role))
-        {
-            throw new CustomError.Unauthorized("Unauthorized to access this route")
-        }
-        next();
-     }
-}
+const authorizePermissions = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      throw new CustomError.UnauthorizedError(
+        "Unauthorized to access this route"
+      );
+    }
+    next();
+  };
+};
 
 module.exports = {
-    authenticateUser,
-    authorizePermission
-}
+  authenticateUser,
+  authorizePermissions,
+};
