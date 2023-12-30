@@ -17,18 +17,17 @@ const getAllProducts = async (req, res) => {
     if(req.query._sort && req.query._order)
         products =  products.sort({[req.query._sort]:req.query._order})
 
-    if(req.query.category)
-    {
-        products =  products.find({category:req.query.category})
-        total = total.find({category:req.query.category})
-    }
 
-    if(req.query.company)
-    {
-        products =  products.find({company:req.query.company})
-        total = total.find({company:req.query.company})
-    }
-
+        const companies = req.query.company;
+        const categories = req.query.company;
+        if (companies) {
+            productsQuery = productsQuery.where('company').in(companies);
+            totalQuery = totalQuery.where('company').in(companies);
+          }
+          if (categories) {
+            productsQuery = productsQuery.where('categories').in(categories);
+            totalQuery = totalQuery.where('categories').in(categories);
+          }
     if(req.query._page && req.query._limit)
     {
         const pageSize = +req.query._limit;
