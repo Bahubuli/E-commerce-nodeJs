@@ -19,15 +19,26 @@ const getAllProducts = async (req, res) => {
 
     const companies = req.query.company;
     const categories = req.query.category;
-    if (companies) {
-      productsQuery = productsQuery.where('company').in(companies);
-      totalQuery = totalQuery.where('company').in(companies);
-    }
-    if (categories) {
-      productsQuery = productsQuery.where('categories').in(categories);
-      totalQuery = totalQuery.where('categories').in(categories);
+    console.log(companies,categories)
+    // if (companies) {
+    //   productsQuery = products.where('company').in(companies);
+    //   totalQuery = total.where('company').in(companies);
+    // }
+    // if (categories) {
+    //   productsQuery = products.where('categories').in(categories);
+    //   totalQuery = total.where('categories').in(categories);
+    // }
+    if(req.query.category)
+    {
+        products =  products.find({category:req.query.category})
+        total = total.find({category:req.query.category})
     }
 
+    if(req.query.company)
+    {
+        products =  products.find({company:req.query.company})
+        total = total.find({company:req.query.company})
+    }
     if(req.query._page && req.query._limit)
     {
         const pageSize = +req.query._limit;
