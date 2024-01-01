@@ -43,7 +43,10 @@ app.use(
   })
 );
 app.use(helmet());
-app.use(cors());
+app.use(cors(
+    {origin:"https://65926a5db4d60c96fb2e706a--taupe-mooncake-4dcd79.netlify.app/",
+    credentials:true}
+));
 app.use(xss());
 app.use(mongoSanitize());
 
