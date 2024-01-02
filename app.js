@@ -43,8 +43,9 @@ app.use(
   })
 );
 app.use(helmet());
-app.use(cors(
-
+app.use(cors({
+    origin: 'https://ecommerce-jitendra.netlify.app'
+}
 ));
 app.use(xss());
 app.use(mongoSanitize());
