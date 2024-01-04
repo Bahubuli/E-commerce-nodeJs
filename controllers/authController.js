@@ -9,7 +9,7 @@ const Token = require('../models/Token');
 const register = async (req, res) => {
   const { email, name, password } = req.body;
 
-  console.log(req.body)
+
   const emailAlreadyExists = await User.findOne({ email });
   if (emailAlreadyExists) {
     throw new CustomError.BadRequestError('Email already exists');
@@ -38,7 +38,7 @@ const register = async (req, res) => {
 };
 
 const verifyEmail = async(req,res)=>{
-    console.log(req.body)
+
     const {verificationToken,email} = req.body;
 
     const user = await User.findOne({email})
@@ -59,12 +59,12 @@ const verifyEmail = async(req,res)=>{
 
 const autoLogin = async(req,res)=>{
     const cookie = req.headers.cookie;
-    console.log(cookie)
+
     if(!cookie || cookie===null)
     return res.sendStatus(401);
 
     const {refreshToken,accessToken} = req.signedCookies;
-    console.log(req.user)
+
     const user= await User.findOne({_id:req.user.userId})
     res.json(user)
 
@@ -169,7 +169,7 @@ const forgotPassword = async(req,res)=>{
 
         await user.save();
    }
-   console.log({email} )
+ 
     res.send("please check your email for reset password link")
 }
 

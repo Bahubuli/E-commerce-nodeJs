@@ -11,7 +11,7 @@ const createProduct = async (req, res) => {
 
 
 const getAllProducts = async (req, res) => {
-    console.log(req.query)
+
     let products = Product.find({});
     let total = Product.find({})
     if(req.query._sort && req.query._order)
@@ -19,7 +19,7 @@ const getAllProducts = async (req, res) => {
 
     const companies = req.query.company;
     const categories = req.query.category;
-    console.log(companies,categories)
+
     // if (companies) {
     //   productsQuery = products.where('company').in(companies);
     //   totalQuery = total.where('company').in(companies);
@@ -65,17 +65,20 @@ const getSingleProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   const { id: productId } = req.params;
 
+ console.log(req.body)
   const product = await Product.findOneAndUpdate({ _id: productId }, req.body, {
     new: true,
     runValidators: true,
   });
 
+  console.log(product)
   if (!product) {
     throw new CustomError.NotFoundError(`No product with id : ${productId}`);
   }
 
   res.status(StatusCodes.OK).json({ product });
 };
+
 const deleteProduct = async (req, res) => {
   const { id: productId } = req.params;
 

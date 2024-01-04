@@ -15,25 +15,25 @@ const addAddress = async (req, res) => {
 const removeAddress = async (req, res) => {
    const addressId = req.body._id;
    const data = await Address.findByIdAndDelete({_id:addressId});
-   console.log(data)
+
    res.json(data)
 };
 
 const updateAddress = async (req, res) => {
     const addressId = req.body._id;
-    console.log("fuck")
+
     const data =await Address.findOneAndUpdate({_id:addressId},req.body,{
         new: true,
         runValidators: true,
       })
-      console.log(data)
+
     res.json(data);
 
 };
 
 const getUserAddress = async (req, res) => {
   const email = req.query.email;
-  console.log(email)
+
   const addresses = await Address.find({ email: email });
   res.json(addresses);
 };

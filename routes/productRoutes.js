@@ -24,11 +24,11 @@ router
 router
   .route('/uploadImage')
   .post([authenticateUser, authorizePermissions('admin')], uploadImage);
-
+//   [authenticateUser, authorizePermissions('admin')],
 router
   .route('/:id')
   .get(getSingleProduct)
-  .patch([authenticateUser, authorizePermissions('admin')], updateProduct)
+  .patch( updateProduct)
   .delete([authenticateUser, authorizePermissions('admin')], deleteProduct);
 
 router.route('/:id/reviews').get(getSingleProductReviews);
