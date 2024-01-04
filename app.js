@@ -42,11 +42,12 @@ app.use(
     max: 60,
   })
 );
-// {
-//     origin: 'https://ecommerce-jitendra.netlify.app'
-// }
+
 app.use(helmet());
 app.use(cors(
+    {
+        origin: 'https://ecommerce-jitendra.netlify.app'
+    }
 ));
 app.use(xss());
 app.use(mongoSanitize());
