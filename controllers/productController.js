@@ -63,9 +63,9 @@ const getSingleProduct = async (req, res) => {
   res.status(StatusCodes.OK).json({ product });
 };
 const updateProduct = async (req, res) => {
-  const { id: productId } = req.params;
+  const {id: productId } = req.params;
 
- console.log(req.body)
+ console.log(productId)
   const product = await Product.findOneAndUpdate({ _id: productId }, req.body, {
     new: true,
     runValidators: true,
@@ -75,12 +75,11 @@ const updateProduct = async (req, res) => {
   if (!product) {
     throw new CustomError.NotFoundError(`No product with id : ${productId}`);
   }
-
   res.status(StatusCodes.OK).json({ product });
 };
 
 const deleteProduct = async (req, res) => {
-  const { id: productId } = req.params;
+  const { _id: productId } = req.params;
 
   const product = await Product.findOne({ _id: productId });
 

@@ -28,8 +28,8 @@ router
 router
   .route('/:id')
   .get(getSingleProduct)
-  .patch( updateProduct)
-  .delete([authenticateUser, authorizePermissions('admin')], deleteProduct);
+  .patch(updateProduct)
+  .delete( deleteProduct);
 
 router.route('/:id/reviews').get(getSingleProductReviews);
 
