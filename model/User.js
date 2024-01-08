@@ -19,6 +19,9 @@ const UserSchema = new mongoose.Schema({
       },
 
     },
+    displayPicture:{
+        type:String
+    },
 
     password:{
         type:String,

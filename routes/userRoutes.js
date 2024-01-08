@@ -16,10 +16,11 @@ router
   .route('/')
   .get(authenticateUser, authorizePermissions('admin'), getAllUsers);
 
-router.route('/showMe').get(authenticateUser, showCurrentUser);
-router.route('/updateUser').patch(authenticateUser, updateUser);
+router.route('/showMe').get(showCurrentUser);
 router.route('/updateUserPassword').patch(authenticateUser, updateUserPassword);
 
-router.route('/:id').get(authenticateUser, getSingleUser);
+router.route('/:id')
+.get(authenticateUser, getSingleUser)
+.patch(updateUser);;
 
 module.exports = router;

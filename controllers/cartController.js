@@ -15,7 +15,7 @@ const removeFromCart = async(req,res)=>{
 
 const getCartItems = async(req,res)=>{
     const email = req.query.user
-    const items = await Cart.find({})
+    const items = await Cart.find({email})
     res.send(items);
 
 }

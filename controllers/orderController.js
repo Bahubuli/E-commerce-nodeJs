@@ -71,6 +71,7 @@ const getAllOrders = async (req, res) => {
   const orders = await Order.find({});
   res.status(StatusCodes.OK).json({ orders, count: orders.length });
 };
+
 const getSingleOrder = async (req, res) => {
   const { id: orderId } = req.params;
   const order = await Order.findOne({ _id: orderId });
@@ -80,6 +81,7 @@ const getSingleOrder = async (req, res) => {
   checkPermissions(req.user, order.user);
   res.status(StatusCodes.OK).json({ order });
 };
+
 const getCurrentUserOrders = async (req, res) => {
   const orders = await Order.find({ email: req.query.email });
   res.status(StatusCodes.OK).json(orders);
@@ -88,14 +90,12 @@ const updateOrder = async (req, res) => {
   const { id: orderId } = req.params;
   const { paymentIntentId } = req.body;
 
+
   const order = await Order.findOne({ _id: orderId });
   if (!order) {
     throw new CustomError.NotFoundError(`No order with id : ${orderId}`);
   }
-  checkPermissions(req.user, order.user);
-
-  order.paymentIntentId = paymentIntentId;
-  order.status = 'paid';
+  order.status = req.body.status;
   await order.save();
 
   res.status(StatusCodes.OK).json({ order });
