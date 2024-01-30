@@ -37,15 +37,13 @@ app.set('trust proxy', 1);
 app.use(
   rateLimiter({
     windowMs: 15 * 60 * 1000,
-    max: 60,
+    max: 6000,
   })
 );
 
 app.use(helmet());
 app.use(cors(
-    {
-        origin: 'https://ecommerce-jitendra.netlify.app'
-    }
+   
 ));
 app.use(xss());
 app.use(mongoSanitize());

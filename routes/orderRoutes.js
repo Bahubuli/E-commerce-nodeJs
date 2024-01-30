@@ -12,7 +12,8 @@ const {
   getCurrentUserOrders,
   createOrder,
   updateOrder,
-  addOrder
+  addOrder,
+  finishOrder
 } = require('../controllers/orderController');
 
 // authenticateUser, authorizePermissions('admin'),
@@ -22,7 +23,8 @@ router
   .get(getCurrentUserOrders);
 
 //router.route('/showMyOrders').get(authenticateUser, getCurrentUserOrders);
-
+router.route("/finish-order")
+.post(finishOrder)
 // authenticateUser
 router
   .route('/:id')

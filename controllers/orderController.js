@@ -1,24 +1,29 @@
-const Order = require('../models/Order');
-const Product = require('../models/Product');
+const Order = require("../models/Order");
+const Product = require("../models/Product");
 
-const { StatusCodes } = require('http-status-codes');
-const CustomError = require('../errors');
-const { checkPermissions } = require('../utils');
+const { StatusCodes } = require("http-status-codes");
+const CustomError = require("../errors");
+const { checkPermissions } = require("../utils");
+const Razorpay = require("razorpay");
 
 const fakeStripeAPI = async ({ amount, currency }) => {
-  const client_secret = 'someRandomValue';
+  const client_secret = "someRandomValue";
   return { client_secret, amount };
 };
 
+const razorpay = new Razorpay({
+  key_id: "rzp_test_uiuLy9EqinpEBV",
+  key_secret: "o8y2JICpIeCXEOWvnc3sY0v3",
+});
 const createOrder = async (req, res) => {
   const { items: cartItems, tax, shippingFee } = req.body;
 
   if (!cartItems || cartItems.length < 1) {
-    throw new CustomError.BadRequestError('No cart items provided');
+    throw new CustomError.BadRequestError("No cart items provided");
   }
   if (!tax || !shippingFee) {
     throw new CustomError.BadRequestError(
-      'Please provide tax and shipping fee'
+      "Please provide tax and shipping fee"
     );
   }
 
@@ -50,9 +55,9 @@ const createOrder = async (req, res) => {
   // get client secret
   const paymentIntent = await fakeStripeAPI({
     amount: total,
-    currency: 'usd',
+    currency: "usd",
   });
-
+  console.log(orderItems);
   const order = await Order.create({
     orderItems,
     total,
@@ -90,7 +95,6 @@ const updateOrder = async (req, res) => {
   const { id: orderId } = req.params;
   const { paymentIntentId } = req.body;
 
-
   const order = await Order.findOne({ _id: orderId });
   if (!order) {
     throw new CustomError.NotFoundError(`No order with id : ${orderId}`);
@@ -101,11 +105,62 @@ const updateOrder = async (req, res) => {
   res.status(StatusCodes.OK).json({ order });
 };
 
-const addOrder = async(req,res)=>{
+const addOrder = async (req, res) => {
+  const amount = req.body.items.reduce(
+    (acc, item) => acc + item.totalAmount,
+    0
+  );
 
-    console.log(req.body.items);
-   const data =  await Order.insertMany(req.body.items)
-    res.json(data)
+  const options = {
+    amount: amount*100,
+    currency: "INR",
+    receipt: ""+Math.round(Math.random() * 10000000),
+    payment_capture: 1,
+  };
+  try {
+    const razorOrder = await razorpay.orders.create(options);
+    console.log("razorOrder  = ", razorOrder);
+    res.json({
+      order_id: razorOrder.id,
+      currency: razorOrder.currency,
+      amount: razorOrder.amount,
+    });
+  } catch (error) {
+    console.log("error = ",error)
+    res.status(400).send("Not able to create order")
+  }
+  //   const data = await Order.insertMany(req.body.items);
+  //   res.json(data);
+};
+
+const finishOrder = async(req,res)=>{
+    console.log("items = ")
+    console.log(req.body)
+
+    for(let i=0;i<req.body.length;i++)
+    {
+        const item = req.body[i];
+        let product = await Product.findOne({_id:item.productId})
+
+        if (product.inventory-item.quantity > 0) {
+            // Reduce the quantity of the product
+            console.log("product  = ",product)
+            product.inventory -= item.quantity;
+            console.log("product  = ",product)
+            // Save the updated product
+            await product.save();
+
+            // Now you can proceed with the rest of your logic
+        }
+        else
+        {
+            res.status(StatusCodes.BAD_REQUEST).send("one or more item is out of stock")
+        }
+
+    }
+
+    const data = await Order.insertMany(req.body)
+    res.json(data);
 }
 
 module.exports = {
@@ -114,5 +169,6 @@ module.exports = {
   getCurrentUserOrders,
   createOrder,
   updateOrder,
-  addOrder
+  addOrder,
+  finishOrder
 };

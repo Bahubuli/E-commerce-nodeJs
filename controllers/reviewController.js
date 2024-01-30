@@ -26,6 +26,9 @@ const createReview = async (req, res) => {
   }
 
   req.body.user = req.user.userId;
+  req.body.userName = req.user.name;
+  req.body.displayPicture = req.user.displayPicture;
+  console.log(req.user.name);
   const review = await Review.create(req.body);
   res.status(StatusCodes.CREATED).json({ review });
 };

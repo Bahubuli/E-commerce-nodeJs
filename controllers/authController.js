@@ -63,8 +63,6 @@ const autoLogin = async(req,res)=>{
     if(!cookie || cookie===null)
     return res.sendStatus(401);
 
-    const {refreshToken,accessToken} = req.signedCookies;
-
     const user= await User.findOne({_id:req.user.userId})
     res.json(user)
 
@@ -100,7 +98,7 @@ const login = async (req, res) => {
     let refreshToken = ""
 
     //check for existing token
-    const existingToken = await Token.findOne({user:user._id})
+  const existingToken = await Token.findOne({user:user._id})
 
   if(existingToken)
   {
@@ -169,7 +167,7 @@ const forgotPassword = async(req,res)=>{
 
         await user.save();
    }
- 
+
     res.send("please check your email for reset password link")
 }
 

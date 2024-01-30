@@ -28,6 +28,12 @@ const ReviewSchema = mongoose.Schema(
       ref: 'Product',
       required: true,
     },
+    userName:{
+        type:String
+    },
+    displayPicture:{
+        type:String
+    }
   },
   { timestamps: true }
 );
@@ -67,3 +73,6 @@ ReviewSchema.post('remove', async function () {
 });
 
 module.exports = mongoose.model('Review', ReviewSchema);
+
+
+

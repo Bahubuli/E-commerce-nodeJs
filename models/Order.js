@@ -85,11 +85,13 @@ const OrderSchema = mongoose.Schema(
             default:0
           },
           user: {
-            type: mongoose.Types.ObjectId,
-            ref: 'User',
+            type: String
           },
           paymentMethod:{
             type:String
+          },
+          paymentId:{
+            type:String,
           },
           status:{
             type:String
