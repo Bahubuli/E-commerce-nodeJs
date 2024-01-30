@@ -42,9 +42,12 @@ app.use(
 );
 
 app.use(helmet());
-app.use(cors(
-   
-));
+const corsOptions = {
+    origin: ['https://ecommerce-jitendra.netlify.app', 'http://localhost:3000'], // Replace with your frontend domain
+    credentials: true, // Enable credentials (cookies, authorization headers)
+  };
+
+app.use(cors(corsOptions));
 app.use(xss());
 app.use(mongoSanitize());
 
