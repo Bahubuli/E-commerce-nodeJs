@@ -43,7 +43,7 @@ app.use(
 
 app.use(helmet());
 const corsOptions = {
-    origin: ['https://ecommerce-jitendra.netlify.app', 'http://localhost:3000'], // Replace with your frontend domain
+    origin: ['https://ecommerce-jitendra.netlify.app', 'http://localhost:5174', 'http://localhost:5173'], // Replace with your frontend domain
     credentials: true, // Enable credentials (cookies, authorization headers)
   };
 
