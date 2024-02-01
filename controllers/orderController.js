@@ -57,7 +57,7 @@ const createOrder = async (req, res) => {
     amount: total,
     currency: "usd",
   });
-  console.log(orderItems);
+
   const order = await Order.create({
     orderItems,
     total,
@@ -119,14 +119,14 @@ const addOrder = async (req, res) => {
   };
   try {
     const razorOrder = await razorpay.orders.create(options);
-    console.log("razorOrder  = ", razorOrder);
+
     res.json({
       order_id: razorOrder.id,
       currency: razorOrder.currency,
       amount: razorOrder.amount,
     });
   } catch (error) {
-    console.log("error = ",error)
+  
     res.status(400).send("Not able to create order")
   }
   //   const data = await Order.insertMany(req.body.items);
@@ -134,9 +134,6 @@ const addOrder = async (req, res) => {
 };
 
 const finishOrder = async(req,res)=>{
-    console.log("items = ")
-    console.log(req.body)
-
     for(let i=0;i<req.body.length;i++)
     {
         const item = req.body[i];
@@ -144,9 +141,7 @@ const finishOrder = async(req,res)=>{
 
         if (product.inventory-item.quantity > 0) {
             // Reduce the quantity of the product
-            console.log("product  = ",product)
             product.inventory -= item.quantity;
-            console.log("product  = ",product)
             // Save the updated product
             await product.save();
 
@@ -160,6 +155,7 @@ const finishOrder = async(req,res)=>{
     }
 
     const data = await Order.insertMany(req.body)
+    console.log(data)
     res.json(data);
 }
 

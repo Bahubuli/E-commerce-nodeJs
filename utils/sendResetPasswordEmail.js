@@ -13,13 +13,8 @@ const sendResetPasswordEmail = async ({
     to: email,
     subject: "Reset password",
     html: `<h4>Hello ${name}
-
-
     ${message}
-
     or copy paste below link in new tab
-
-
     ${verifyEmail}
 
     `,
